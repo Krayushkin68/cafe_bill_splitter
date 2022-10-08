@@ -1,9 +1,9 @@
 <template>
-    <div class="row bg-secondary border border-1 rounded-3 m-2">
-        <div class="col-9 text-light text-end">
-            <h3>Итого: </h3>
+    <div class="row justify-content-end bg-secondary border border-1 rounded-3 m-2">
+        <div class="col-4 text-light text-end me-1">
+            <h3 class="m-0 p-0">Итого: </h3>
         </div>
-        <div class="col">
+        <div class="col-4 p-0">
              <span class="input-group-text"><strong>{{ total }}</strong></span>
         </div>
     </div>
