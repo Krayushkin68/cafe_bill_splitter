@@ -59,8 +59,9 @@
                     col-md-2 
                     col-sm-2 align-self-center
                     col-3
+                    text-center
                     ">
-            <button class="btn btn-sm btn-danger rounded-2" @click="$emit('remove', position)">Удалить</button>
+            <button class="btn btn-sm btn-danger rounded-3" @click="$emit('remove', position)">Удалить</button>
         </div>
     </div>
 
