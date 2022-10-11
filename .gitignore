@@ -143,6 +143,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+
 # Editor directories and files
 .idea
 .vscode
@@ -151,4 +152,8 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Migrations
+migrations
+cafe_bill_splitter_server\bill_app\migrations
 

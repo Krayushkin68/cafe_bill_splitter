@@ -11,7 +11,7 @@ const authGuard = function (to, from, next) {
     const isAuthorized = localStorage.hasOwnProperty('token');
     console.log(`authorized: ${isAuthorized}`)
     if (!isAuthorized){
-        next({name: 'home'}) // Change to Login
+        next({name: 'login'})
     } else {
         next();
     }
@@ -39,7 +39,8 @@ const routes = [
     {
         path: '/positions',
         name: 'positions',
-        component: PositionsView
+        component: PositionsView,
+        beforeEnter: authGuard
     }
 ]
 
