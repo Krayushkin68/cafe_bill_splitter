@@ -14,7 +14,6 @@ export const AuthModule = {
         }
     },
     getters: {
-        getUserRole: (state) => state.credentials.role,
         getToken: (state) => state.credentials.token,
         isAuthorized: (state) => state.isAuthorized
     },
@@ -58,6 +57,8 @@ export const AuthModule = {
                     resolve()
                 })
                 .catch((error) => {
+                    commit('deleteToken');
+                    delete DefaultAPIInstance.defaults.headers['Authorization'];
                     reject(error)
                 })
             })

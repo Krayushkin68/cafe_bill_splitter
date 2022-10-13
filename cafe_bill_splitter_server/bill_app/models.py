@@ -7,3 +7,8 @@ class Position(models.Model):
     name = models.CharField(max_length=100, blank=True)
     price = models.FloatField()
     count = models.IntegerField()
+
+
+class Participant(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)

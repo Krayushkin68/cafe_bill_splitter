@@ -6,7 +6,7 @@
                  'bg-light': !this.position.changed}">
         <div class="col-12 col-md-6 ms-0 ps-0 pe-0 pe-md-2">
             <div class="input-group input-group-lg">
-                <span class="input-group-text">{{ index+1 }}</span>
+                <span class="input-group-text" @click="ToggleCollapse">{{ index+1 }}</span>
                 <div class="form-floating">
                     <input type="text" 
                            class="form-control" 
@@ -43,14 +43,27 @@
         <div class="col-3 col-sm-2 col-lg-1 text-center align-self-center">
             <button class="btn btn-sm btn-danger" @click="$emit('remove', position)">Удалить</button>
         </div>
+        <div :id="`collapse-${index}`" class="collapse">
+            <PositionParticipants :position="position"/>
+        </div>
     </div>
 
 </template>
 
 <script>
+import bootstrap from 'bootstrap/dist/js/bootstrap'
+import PositionParticipants from '@/components/PositionParticipants.vue'
+
 export default {
     name: "PositionItem",
-
+    components: {
+        PositionParticipants
+    },
+    data() {
+        return {
+            collapse: null
+        }
+    },
     props: {
         position: {
             type: Object,
@@ -71,10 +84,18 @@ export default {
         updateCount(event) {
             this.$emit("update-count", {id: this.position.id, value: event.target.value})
         },
+        ToggleCollapse() {
+            if (!this.collapse) {
+                this.collapse = new bootstrap.Collapse(document.getElementById(`collapse-${this.index}`));
+            }
+            this.collapse.toggle()
+        }
     }
 }
 </script>
 
-<style>
-
+<style scoped>
+span.input-group-text {
+    cursor: pointer;
+}
 </style>

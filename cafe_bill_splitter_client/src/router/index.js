@@ -1,8 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
-import PositionsView from '../views/PositionsView.vue'
 import LoginView from '../views/LoginView.vue'
+import BillCalculateView from '../views/BillCalculateView.vue'
 
 
 
@@ -37,9 +37,9 @@ const routes = [
         beforeEnter: authGuard
     },
     {
-        path: '/positions',
-        name: 'positions',
-        component: PositionsView,
+        path: '/bill_calculate',
+        name: 'bill_calculate',
+        component: BillCalculateView,
         beforeEnter: authGuard
     }
 ]
