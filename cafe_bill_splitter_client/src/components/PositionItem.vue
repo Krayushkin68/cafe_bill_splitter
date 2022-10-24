@@ -44,7 +44,7 @@
             <button class="btn btn-sm btn-danger" @click="$emit('remove', position)">Удалить</button>
         </div>
         <div :id="`collapse-${index}`" class="collapse">
-            <PositionParticipants :position="position"/>
+            <PositionParticipants :position="position" @show-modal="ShowModal"/>
         </div>
     </div>
 
@@ -76,19 +76,22 @@ export default {
     },
     methods: {
         updateName(event) {
-            this.$emit("update-name", {id: this.position.id, value: event.target.value})
+            this.$emit("update", {...this.position, name: event.target.value})
         },
         updatePrice(event) {
-            this.$emit("update-price", {id: this.position.id, value: event.target.value})
+            this.$emit("update", {...this.position, price: event.target.value})
         },
         updateCount(event) {
-            this.$emit("update-count", {id: this.position.id, value: event.target.value})
+            this.$emit("update", {...this.position, count: parseInt(event.target.value)})
         },
         ToggleCollapse() {
             if (!this.collapse) {
                 this.collapse = new bootstrap.Collapse(document.getElementById(`collapse-${this.index}`));
             }
             this.collapse.toggle()
+        },
+        ShowModal(position) {
+            this.$emit('show-modal', position)
         }
     }
 }

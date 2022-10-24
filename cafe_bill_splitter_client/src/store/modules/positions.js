@@ -15,26 +15,27 @@ export const PositionsModule = {
         AddPosition(state, position) {
             state.positions.push(position)
         },
+        AddOrUpdatePositionParticipant(state, {position, participant}) {
+            const existingPosition = state.positions.find(el => el.id == position.id)
+            if (!existingPosition.participants) {
+                existingPosition.participants = []
+            }
+            const existingParticipant = existingPosition.participants.find(el => el.id == participant.id);
+            if (existingParticipant) {
+                existingParticipant.count = participant.count
+            } else {
+                existingPosition.participants.push(participant)
+            }
+        },
         DeletePosition(state, position) {
             state.positions = state.positions.filter(p => p.id !== position.id)
         },
-        UpdatePositionPrice(state, data) {
-            const position = state.positions.find(p => p.id === data.id);
-            const value = Number.parseInt(data.value)
-            if (value >= 0) {
-                position.price = data.value;
-                position.changed = true;
-            }
-        },
-        UpdatePositionName(state, data) {
-            const position = state.positions.find(p => p.id === data.id);
-            position.name = data.value;
-            position.changed = true;
-        },
-        UpdatePositionCount(state, data) {
-            const position = state.positions.find(p => p.id === data.id);
-            position.count = data.value;
-            position.changed = true;
+        UpdatePosition(state, position) {
+            const existingPosition = state.positions.find(p => p.id === position.id);
+            existingPosition.name = position.name
+            existingPosition.price = position.price
+            existingPosition.count = position.count
+            existingPosition.changed = true;
         },
         ResetPositions(state, positions) {
             state.positions = positions

@@ -14,6 +14,7 @@ export const AuthModule = {
         }
     },
     getters: {
+        getUserRole: (state) => state.credentials.role,
         getToken: (state) => state.credentials.token,
         isAuthorized: (state) => state.isAuthorized
     },
@@ -33,34 +34,32 @@ export const AuthModule = {
         onLogin({commit}, {username, password}) {
             return new Promise((resolve, reject) => {
                 AuthAPI
-                .login(username, password)
-                .then((response) => {
-                    const token = response.data['auth_token']
-                    commit('setToken', token)
-                    DefaultAPIInstance.defaults.headers['Authorization'] = `Token ${token}`
-                    resolve(response)
-                })
-                .catch((error) => {
-                    commit('deleteToken')
-                    reject(error)
-                })
+                    .login(username, password)
+                    .then((response) => {
+                        const token = response.data['auth_token']
+                        commit('setToken', token)
+                        DefaultAPIInstance.defaults.headers['Authorization'] = `Token ${token}`
+                        resolve(response)
+                    })
+                    .catch((error) => {
+                        commit('deleteToken')
+                        reject(error)
+                    })
             })
-            
+
         },
         onLogout({commit}) {
             return new Promise((resolve, reject) => {
+                commit('deleteToken')
                 AuthAPI
-                .logout()
-                .then(() => {
-                    commit('deleteToken');
-                    delete DefaultAPIInstance.defaults.headers['Authorization'];
-                    resolve()
-                })
-                .catch((error) => {
-                    commit('deleteToken');
-                    delete DefaultAPIInstance.defaults.headers['Authorization'];
-                    reject(error)
-                })
+                    .logout()
+                    .then(() => {
+                        delete DefaultAPIInstance.defaults.headers['Authorization'];
+                        resolve()
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
             })
         },
     }

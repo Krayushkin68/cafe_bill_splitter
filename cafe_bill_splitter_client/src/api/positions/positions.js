@@ -15,7 +15,8 @@ export const PositionsAPI = {
         const data = { 
             name: position.name,
             price: position.price,
-            count: position.count 
+            count: position.count,
+            participants: position.participants 
         }
         return DefaultAPIInstance.put(`/positions/${position.id}/`, data);
     },
