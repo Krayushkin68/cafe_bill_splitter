@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import ParticipantItem from "@/components/ParticipantItem.vue";
-import AddParticipantModal from "@/components/AddParticipantModal.vue";
+import ParticipantItem from "@/components/participant/ParticipantItem.vue";
+import AddParticipantModal from "@/components/participant/AddParticipantModal.vue";
 
 import { mapGetters, mapActions } from "vuex";
 
@@ -37,13 +37,20 @@ export default {
       resetParticipants: "ParticipantsModule/Reset",
       createParticipant: "ParticipantsModule/Create",
       deleteParticipant: "ParticipantsModule/Delete",
+      updatePositions: "PositionsModule/getAllPositions",
+      removeUnpairedParticipants: "PositionsModule/removeUnpairedParticipants",
     }),
     Add(name) {
       this.createParticipant({ name: name });
+      this.updatePositions();
       
     },
     Delete(participant) {
-      this.deleteParticipant(participant);
+      this.deleteParticipant(participant).then(() => {
+        this.updatePositions().then(() => {
+          this.removeUnpairedParticipants();
+        })
+      });
     },
   },
   computed: {

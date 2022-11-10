@@ -3,7 +3,9 @@
                 border border-1 rounded-3 shadow-sm 
                 mt-2 mx-1 gx-3 pe-0 pe-md-1"
         :class="{'bg-danger bg-opacity-10': this.position.changed,
-                 'bg-light': !this.position.changed}">
+                 'bg-light': !this.position.changed && !this.IsFilled,
+                 'bg-success bg-opacity-10': this.IsFilled
+                 }">
         <div class="col-12 col-md-6 ms-0 ps-0 pe-0 pe-md-2">
             <div class="input-group input-group-lg">
                 <span class="input-group-text" @click="ToggleCollapse">{{ index+1 }}</span>
@@ -44,7 +46,7 @@
             <button class="btn btn-sm btn-danger" @click="$emit('remove', position)">Удалить</button>
         </div>
         <div :id="`collapse-${index}`" class="collapse">
-            <PositionParticipants :position="position" @show-modal="ShowModal"/>
+            <PositionParticipants :position="position" @show-add-modal="ShowAddModal" @show-edit-modal="ShowEditModal" @show-delete-modal="ShowDeleteModal"/>
         </div>
     </div>
 
@@ -52,7 +54,7 @@
 
 <script>
 import bootstrap from 'bootstrap/dist/js/bootstrap'
-import PositionParticipants from '@/components/PositionParticipants.vue'
+import PositionParticipants from '@/components/position_participant/PositionParticipants.vue'
 
 export default {
     name: "PositionItem",
@@ -79,9 +81,21 @@ export default {
             this.$emit("update", {...this.position, name: event.target.value})
         },
         updatePrice(event) {
+            var newVal = parseFloat(event.target.value)
+            if (isNaN(newVal) || newVal < 0) {
+                event.target.value = 0
+                return
+            }
             this.$emit("update", {...this.position, price: event.target.value})
         },
         updateCount(event) {
+            var newVal = parseInt(event.target.value)
+            var neededCount = this.HasPairedParticipant ? this.FilledCount + 1 : this.FilledCount
+            if (neededCount === 0) neededCount = 1
+            if (newVal < neededCount) {
+                event.target.value = neededCount
+                return
+            }
             this.$emit("update", {...this.position, count: parseInt(event.target.value)})
         },
         ToggleCollapse() {
@@ -90,8 +104,41 @@ export default {
             }
             this.collapse.toggle()
         },
-        ShowModal(position) {
-            this.$emit('show-modal', position)
+        ShowAddModal(position) {
+            this.$emit('show-add-modal', position)
+        },
+        ShowEditModal(data) {
+            this.$emit('show-edit-modal', data)
+        },
+        ShowDeleteModal(position) {
+            this.$emit('show-delete-modal', position)
+        }
+    },
+    computed: {
+        IsFilled() {
+            var participants = this.position.participants
+            if (participants == null) 
+                return false
+
+            if (this.HasPairedParticipant)
+                return true
+            
+            if (this.FilledCount >= this.position.count)
+                return true
+
+            return false
+        },
+        HasPairedParticipant(){
+            var participants = this.position.participants
+            if (participants == null) 
+                return false
+            return participants.find(p => p.count == -1) != null ? true : false
+        },
+        FilledCount() {
+            var sum = 0;
+            if (this.position.participants != null)
+                this.position.participants.filter(el => el.count > 0).forEach(el => sum += el.count);
+            return sum;
         }
     }
 }

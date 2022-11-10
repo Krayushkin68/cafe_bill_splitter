@@ -34,32 +34,32 @@ export const AuthModule = {
         onLogin({commit}, {username, password}) {
             return new Promise((resolve, reject) => {
                 AuthAPI
-                    .login(username, password)
-                    .then((response) => {
-                        const token = response.data['auth_token']
-                        commit('setToken', token)
-                        DefaultAPIInstance.defaults.headers['Authorization'] = `Token ${token}`
-                        resolve(response)
-                    })
-                    .catch((error) => {
-                        commit('deleteToken')
-                        reject(error)
-                    })
+                .login(username, password)
+                .then((response) => {
+                    const token = response.data['auth_token']
+                    commit('setToken', token)
+                    DefaultAPIInstance.defaults.headers['Authorization'] = `Token ${token}`
+                    resolve(response)
+                })
+                .catch((error) => {
+                    commit('deleteToken')
+                    reject(error)
+                })
             })
-
+            
         },
         onLogout({commit}) {
             return new Promise((resolve, reject) => {
                 commit('deleteToken')
                 AuthAPI
-                    .logout()
-                    .then(() => {
-                        delete DefaultAPIInstance.defaults.headers['Authorization'];
-                        resolve()
-                    })
-                    .catch((error) => {
-                        reject(error)
-                    })
+                .logout()
+                .then(() => {
+                    delete DefaultAPIInstance.defaults.headers['Authorization'];
+                    resolve()
+                })
+                .catch((error) => {
+                    reject(error)
+                })
             })
         },
     }

@@ -32,18 +32,21 @@
 
     <PositionsList v-if="tabName === 'positions'" />
     <ParticipantsList v-if="tabName === 'participants'" />
+    <CalculateList v-if="tabName === 'calculation'" />
   </div>
 </template>
 
 <script>
-import PositionsList from "@/components/PositionsList.vue";
-import ParticipantsList from "@/components/ParticipantsList.vue";
+import PositionsList from "@/components/position/PositionsList.vue";
+import CalculateList from "@/components/calculate/CalculateList.vue";
+import ParticipantsList from "@/components/participant/ParticipantsList.vue";
 
 export default {
   name: "BillCalculateView",
   components: {
     PositionsList,
     ParticipantsList,
+    CalculateList
   },
   data() {
     return {

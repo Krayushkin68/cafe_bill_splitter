@@ -1,9 +1,9 @@
 <template>
-    <div class="modal fade" :id="id" tabindex="-1" :aria-labelledby="`${id}Label`" aria-hidden="true">
+    <div class="modal fade" :id="id" tabindex="-1" aria-labelledby="set-label" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" :id="`${id}Label`">Назначить</h5>
+            <h5 class="modal-title" id="set-label">Назначить</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -11,19 +11,20 @@
             <div class="row">
               <div class="col">
                 <div class="form-floating">
-                  <input type="text" class="form-control" :id="`position-${position.id}-name`" :value="position.name" readonly/>
-                  <label :for="`position-${position.id}-name`">Название</label>
+                  <input type="text" class="form-control" id="add-position-name" :value="position.name" readonly/>
+                  <label for="add-position-name">Название</label>
                 </div>
               </div>
               <div class="col">
                 <form class="form-floating">
-                  <input type="text" class="form-control" :id="`position-${position.id}-availible`" :value="AvailableCount" readonly>
-                  <label :for="`position-${position.id}-availible`">Доступно</label>
+                  <input type="text" class="form-control" id="add-position-availible" :value="AvailableCount" readonly>
+                  <label for="add-position-availible">Доступно</label>
                 </form>
               </div>
             </div>
             <hr>
-            <p>Выберите одного или несколько участников</p>
+            <p v-if="AvailableParticipants.length > 0">Выберите одного или несколько участников</p>
+            <p v-else>Назначены все доступные участники, пожалуйста редактируйте количество назначенных позиций</p>
             <div class="participants-select">
               <div class="input-group mb-1 participant-select" v-for="(participant, index) in AvailableParticipants" :value="index" :key="index" @click="UpdateChecked(participant)">
                 <div class="input-group-text">
@@ -50,7 +51,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-primary" :disabled="!CanApply" @click.prevent="Apply">Принять</button>
+            <button type="button" class="btn btn-primary" :disabled="!CanApply" @click.prevent="Apply" data-bs-dismiss="modal">Принять</button>
           </div>
         </div>
       </div>
@@ -101,19 +102,20 @@ export default {
     },
     Clear() {
       this.checkedParticipants = [];
+      this.count = 0;
       this.CountInputValid = false;
     },
     Apply() {
       if (this.checkedParticipants.length == 1) {
         this.AddOrUpdatePositionParticipant({
-          position: this.position, 
-          participant: {...this.checkedParticipants[0], count: this.count}
+            position: this.position, 
+            participant: {...this.checkedParticipants[0], count: this.count}
           })
       } else {
         this.checkedParticipants.forEach(el => {
           this.AddOrUpdatePositionParticipant({
-            position: this.position, 
-            participant: {...el, count: -1}
+              position: this.position, 
+              participant: {...el, count: -1}
             })
         })
       }
@@ -156,7 +158,7 @@ export default {
 </script>
 
 <style>
-.participant-select{
-  cursor: pointer;
-}
+  .participant-select{
+    cursor: pointer;
+  }
 </style>

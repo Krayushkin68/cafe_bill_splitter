@@ -43,7 +43,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import NavLink from "@/components/NavLink.vue";
+import NavLink from "@/components/nav/NavLink.vue";
 
 export default {
   name: "NavBar",

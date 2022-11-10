@@ -7,12 +7,13 @@
       v-for="(badge, index) in badges"
       :key="index"
       :class="{'bg-success': badge.type == 'simple', 'bg-secondary': badge.type == 'paired'}"
+      @click="EmitEdit(badge)"
       >
       {{ badge.name }} - {{ badge.count }}
     </span>
 
     <!-- Modal trigger button -->
-    <button :disabled="filled" class="btn btn-sm btn-outline-success mx-1" @click="$emit('show-modal', position)">{{ filled ? 'Заполнено' : 'Добавить' }}</button>
+    <button :disabled="filled" class="btn btn-sm btn-outline-success mx-1" @click="$emit('show-add-modal', position)">{{ filled ? 'Заполнено' : 'Добавить' }}</button>
   </div>
 </template>
 
@@ -34,6 +35,17 @@ export default {
       type: Object,
       require: true,
     },
+  },
+  methods: {
+    EmitEdit(badge) {
+      if (badge.type == 'simple'){
+        var participant = this.position.participants.filter(p => p.name == badge.name)[0]
+        var position = this.position
+        this.$emit('show-edit-modal', { position, participant })
+      } else {
+        this.$emit('show-delete-modal', this.position)
+      }
+    }
   },
   computed: {
     badges(){

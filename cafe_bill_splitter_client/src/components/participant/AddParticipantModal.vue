@@ -11,12 +11,13 @@
           <div class="modal-body">
             <div class="mb-3">
               <label for="NameInput" class="form-label">Имя</label>
-              <input type="text" class="form-control" id="NameInput" v-model="name"/>
+              <input type="text" class="form-control" id="NameInput" :class="{'is-valid': isValid, 'is-invalid': !isValid}" v-model="name" @input="Validate"/>
+              <div class="invalid-feedback">{{ !isUnique ? "Участник с таким именем уже существует" : "Неверное имя участника" }}</div>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-primary" @click.prevent="Add">Принять</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" :disabled="!isValid" @click.prevent="Add">Добавить</button>
           </div>
         </div>
       </div>
@@ -32,6 +33,7 @@
 
 <script>
 import bootstrap from "bootstrap/dist/js/bootstrap";
+import {mapGetters} from "vuex";
 
 export default {
   name: "AddParticipantModal",
@@ -43,7 +45,9 @@ export default {
   data() {
     return {
       name: "",
-      modal: null
+      modal: null,
+      isValid: false,
+      isUnique: true
     };
   },
   methods: {
@@ -56,8 +60,29 @@ export default {
     Add() {
       this.$emit("add", this.name);
       this.name = "";
-      this.modal.hide();
+    },
+    Validate(event) {
+      var name = event.target.value;
+      this.ValidateUnique(name);
+
+      if (name !== '' && this.isUnique){
+        this.isValid = true;
+      } else {
+        this.isValid = false;
+      }
+    },
+    ValidateUnique(name) {
+      if (this.participants.find(p => p.name === name)){
+        this.isUnique = false;
+      } else {
+        this.isUnique = true;
+      }
     }
+  },
+  computed: {
+    ...mapGetters({
+      participants: 'ParticipantsModule/getParticipants'
+    })
   }
 };
 </script>

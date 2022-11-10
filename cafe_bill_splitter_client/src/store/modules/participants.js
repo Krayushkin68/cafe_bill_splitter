@@ -42,15 +42,20 @@ export const ParticipantsModule = {
                     console.log(error)
                 })
         },
-        async Delete({ commit }, data) {
-            await ParticipantsAPI
-                .Delete(data.id)
-                .then(() => {
-                    commit('Delete', data)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
+        Delete({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                ParticipantsAPI
+                    .Delete(data.id)
+                    .then(() => {
+                        commit('Delete', data)
+                        resolve()
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        reject(error)
+                    })
+            }
+            )
         }
     },
 

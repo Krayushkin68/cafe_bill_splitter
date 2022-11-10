@@ -14,9 +14,14 @@
         :index="index"
         @update="UpdatePosition"
         @remove="deletePosition"
-        @show-modal="ShowModal"/>
+        @show-add-modal="ShowAddModal"
+        @show-edit-modal="ShowEditModal"
+        @show-delete-modal="ShowDeleteModal"
+        />
       <PositionsTotal :total="positionsTotal" />
-      <AddPositionParticipantModal :position="modalPosition" :id="'add-position-participant-modal'"/>
+      <AddPositionParticipantModal :position="modalPosition" :id="'add-position-participant-modal'" />
+      <EditPositionParticipantModal :position="modalPosition" :participant="modalParticipant" :id="'edit-position-participant-modal'" />
+      <DeletePairedPositionParticipantModal :position="modalPosition" :id="'delete-position-participant-modal'" />
     </div>
     <div v-else class="text-center mx-2 my-3 bg-light border border-1 rounded-3">
       <h5>Список позиций пуст</h5>
@@ -25,9 +30,11 @@
 </template>
 
 <script>
-import PositionItem from "@/components/PositionItem.vue";
-import PositionsTotal from "@/components/PositionsTotal.vue";
-import AddPositionParticipantModal from '@/components/AddPositionParticipantModal'
+import PositionItem from "@/components/position/PositionItem.vue";
+import PositionsTotal from "@/components/position/PositionsTotal.vue";
+import AddPositionParticipantModal from '@/components/position_participant/AddPositionParticipantModal'
+import EditPositionParticipantModal from '@/components/position_participant/EditPositionParticipantModal'
+import DeletePairedPositionParticipantModal from '@/components/position_participant/DeletePairedPositionParticipantModal'
 import bootstrap from "bootstrap/dist/js/bootstrap";
 import { mapActions, mapGetters, mapMutations } from "vuex";
 
@@ -36,12 +43,17 @@ export default {
   components: {
     PositionItem,
     PositionsTotal,
-    AddPositionParticipantModal
+    AddPositionParticipantModal,
+    EditPositionParticipantModal,
+    DeletePairedPositionParticipantModal
   },
   data() {
     return {
       modalPosition: {id: 1, name: "", count: 1, participants: []},
-      modal: null
+      modalParticipant: {id: 1, name: "", count: 1},
+      addModal: null,
+      editModal: null,
+      deleteModal: null
     };
   },
   methods: {
@@ -57,20 +69,35 @@ export default {
     addPosition() {
       this.createPosition({ name: "", price: 0, count: 1, participants: [] });
     },
-    ShowModal(position) {
+    ShowAddModal(position) {
         this.modalPosition = position;
-        if (!this.modal){
-          this.modal = new bootstrap.Modal(document.getElementById('add-position-participant-modal'));
+        if (!this.addModal){
+          this.addModal = new bootstrap.Modal(document.getElementById('add-position-participant-modal'));
         }
-        this.modal.show();
-    }
+        this.addModal.show();
+    },
+    ShowEditModal({position, participant}) {
+      this.modalPosition = position;
+      this.modalParticipant = participant;
+      if (!this.editModal){
+          this.editModal = new bootstrap.Modal(document.getElementById('edit-position-participant-modal'));
+        }
+        this.editModal.show();
+    },
+    ShowDeleteModal(position) {
+      this.modalPosition = position;
+      if (!this.deleteModal){
+          this.deleteModal = new bootstrap.Modal(document.getElementById('delete-position-participant-modal'));
+        }
+        this.deleteModal.show();
+    },
   },
   computed: {
     ...mapGetters({
       positions: "PositionsModule/getPositions",
     }),
     positionsTotal() {
-      let sum = 0;
+      var sum = 0;
       this.positions.forEach((p) => {
         sum += p.price * p.count;
       });
@@ -81,7 +108,8 @@ export default {
     },
   },
   mounted() {
-    this.updatePositions();
+    if (this.positions.length === 0)
+      this.updatePositions();
   },
 };
 </script>
